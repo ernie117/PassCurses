@@ -65,7 +65,7 @@ void PassCurses::create_rc(int CYPHER_KEY) {
     if (ch != 'y') std::exit(EXIT_FAILURE);
 
     std::ofstream outstream(CURRENT_PATH + "/data/passrc");
-    if (outstream.fail()) {
+    if (!outstream.is_open()) {
         std::cout << "COULD NOT CREATE FILE!\n";
         std::exit(EXIT_FAILURE);
     } else {
@@ -89,8 +89,6 @@ void PassCurses::create_rc(int CYPHER_KEY) {
 }
 
 
-
-
 /*
  * Getting master password from user, comparing to file
  */
@@ -103,6 +101,7 @@ PassCurses::read_master_password(int CYPHER_KEY) {
 
     std::string master_password;
     std::getline(instream, master_password);
+    instream.close();
 
     return decrypt(master_password, CYPHER_KEY);
 }
@@ -430,6 +429,10 @@ PassCurses::open_password_file(int CYPHER_KEY) {
         ch = getchar();
         if (ch == 'y') {
             create_password_file(CYPHER_KEY);
+            std::ifstream new_instream(CURRENT_PATH + "/data/testing.json");
+            new_instream >> j;
+            new_instream.close();
+            return j;
         } else {
             instream.close();
             std::exit(EXIT_FAILURE);
@@ -437,6 +440,8 @@ PassCurses::open_password_file(int CYPHER_KEY) {
     }
 
     instream >> j;
+    std::cout << "testing\n";
+    instream.close();
     return j;
 }
 

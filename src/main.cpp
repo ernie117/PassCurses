@@ -7,10 +7,10 @@
 int main()
 {
     const int CYPHER_KEY = set_key();
+    if (!fs::exists(CURRENT_PATH + "/data/passrc")) create_rc(CYPHER_KEY);
+
     if (!authenticate(CYPHER_KEY)) return 0;
     JSON j = open_password_file(CYPHER_KEY);
-
-    if (!fs::exists(CURRENT_PATH + "/data/passrc")) create_rc(CYPHER_KEY);
 
     initialize_ncurses();
     init_color(COLOR_CYAN, 86, 143, 143); // Actually dark grey
