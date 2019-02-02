@@ -1,7 +1,7 @@
 // TODO Implement password deletion
-#include "PassCurses.hpp"
-#include "PassCurses.cpp"
-#include "json.hpp"
+#include "includes/PassCurses.hpp"
+#include "includes/PassCurses.cpp"
+#include "includes/json.hpp"
 
 
 int main()
@@ -10,7 +10,7 @@ int main()
     if (!authenticate(CYPHER_KEY)) return 0;
     JSON j = open_password_file(CYPHER_KEY);
 
-    if (!fs::exists(CURRENT_PATH + "/passrc")) create_rc(CYPHER_KEY);
+    if (!fs::exists(CURRENT_PATH + "/data/passrc")) create_rc(CYPHER_KEY);
 
     initialize_ncurses();
     init_color(COLOR_CYAN, 86, 143, 143); // Actually dark grey

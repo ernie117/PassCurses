@@ -64,10 +64,10 @@ void PassCurses::create_rc(int CYPHER_KEY) {
     ch = getchar();
     if (ch != 'y') std::exit(EXIT_FAILURE);
 
-    std::ofstream outstream(CURRENT_PATH + "/passrc");
+    std::ofstream outstream(CURRENT_PATH + "/data/passrc");
     if (outstream.fail()) {
         std::cout << "COULD NOT CREATE FILE!\n";
-        return;
+        std::exit(EXIT_FAILURE);
     } else {
         std::string password;
         std::cin.ignore();
@@ -96,7 +96,7 @@ void PassCurses::create_rc(int CYPHER_KEY) {
  */
 std::string
 PassCurses::read_master_password(int CYPHER_KEY) {
-    std::ifstream instream(CURRENT_PATH + "/passrc");
+    std::ifstream instream(CURRENT_PATH + "/data/passrc");
     if (instream.fail()) {
         std::cerr << "CANNOT OPEN PASSRC" << std::endl;
     }
@@ -245,7 +245,7 @@ PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, int CY
  */
 void
 PassCurses::write_to_file(JSON &j) {
-    std::ofstream outstream(CURRENT_PATH + "/testing.json");
+    std::ofstream outstream(CURRENT_PATH + "/data/testing.json");
     if (!outstream.is_open()) {
         std::cerr << "CAN'T WRITE TO FILE!" << std::endl;
         return;
@@ -264,7 +264,7 @@ void PassCurses::add_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
     std::ifstream instream;
-    instream.open(CURRENT_PATH + "/testing.json");
+    instream.open(CURRENT_PATH + "/data/testing.json");
     if (!instream.is_open()) {
         std::cerr << "FILE NOT FOUND!" << std::endl;
         return;
@@ -320,7 +320,7 @@ void PassCurses::add_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
  */
 void PassCurses::create_password_file(int CYPHER_KEY) {
     JSON j;
-    std::ofstream outstream(CURRENT_PATH + "/testing.json");
+    std::ofstream outstream(CURRENT_PATH + "/data/testing.json");
 
     std::string key, value;
     std::cout << "Enter test key: ";
@@ -388,7 +388,7 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
     getmaxyx(stdscr, rows, columns);
 
     std::ifstream instream;
-    instream.open(CURRENT_PATH + "/testing.json");
+    instream.open(CURRENT_PATH + "/data/testing.json");
     if (!instream.is_open()) {
         std::cerr << "FILE NOT FOUND!" << std::endl;
         std::exit(1);
@@ -422,7 +422,7 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
 JSON
 PassCurses::open_password_file(int CYPHER_KEY) {
     JSON j;
-    std::ifstream instream(CURRENT_PATH + "/testing.json");
+    std::ifstream instream(CURRENT_PATH + "/data/testing.json");
     if (instream.fail()) {
         instream.close();
         char ch;
