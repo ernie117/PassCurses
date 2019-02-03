@@ -26,11 +26,12 @@ int main()
     box(password_win, 0, 0);
     wrefresh(password_win);
 
-    auto choice    = 0;
-    auto highlight = 1;
     int j_compare  = j.size();
-    auto decrypted = false;
-    auto helped    = false;
+    auto choice    = 0;  // char is too small to hold curses KEY values
+    auto highlight = 1;  // which printed line to highlight
+    auto decrypted = false;  // tracking whether a password has been decrypted
+    auto helped    = false;  // tracking whether help has been printed
+
     print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
     for (;;) {
         choice = getch();

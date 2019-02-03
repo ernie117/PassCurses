@@ -276,12 +276,15 @@ void PassCurses::add_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
 
     curs_set(1);
     char key[30];
+    /* std::cin.sync(); */
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Enter key for new password: ");
     wrefresh(password_win);
     refresh();
-    scanw("%s", &key);
-    std::string empty_test;
-    if (empty_test.empty()) {
+    getstr(key);
+    std::string empty_test(key);
+    auto k_length = empty_test.length();
+
+    if (k_length == 0) {
         mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
         curs_set(0);
         return;
@@ -298,15 +301,24 @@ void PassCurses::add_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Enter your password: ");
     wrefresh(password_win);
     refresh();
-    scanw("%s", &password);
+    getstr(password);
+    std::string empty_pass_test(password);
+    auto p_length = empty_pass_test.length();
+
+    if (p_length == 0) {
+        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
+        curs_set(0);
+        return;
+    }
+
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                     ");
     refresh();
     wrefresh(password_win);
 
     tcsetattr(STDIN_FILENO, TCSANOW, &old_term);
 
-    std::string final_key = encrypt(std::string(key), CYPHER_KEY);
-    std::string final_password = encrypt(std::string(password), CYPHER_KEY);
+    std::string final_key = encrypt(empty_test, CYPHER_KEY);
+    std::string final_password = encrypt(empty_pass_test, CYPHER_KEY);
     j[final_key]= final_password; // setting the new/overridden value
 
     write_to_file(j);
@@ -344,13 +356,22 @@ void PassCurses::create_password_file(int CYPHER_KEY) {
  */
 std::string
 PassCurses::generate_password(WINDOW *password_win) {
-    int passw_len;
+    char char_passw_len[10];
     int columns, rows;
     getmaxyx(stdscr, rows, columns);
 
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                             ");
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Enter length of new password: ");
-    scanw("%d", &passw_len);
+    getstr(char_passw_len);
+    std::string str_passw_len(char_passw_len);
+    auto str_p_len = str_passw_len.length();
+
+    if (str_p_len == 0) {
+        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
+        return "";
+    }
+
+    auto passw_len = std::stoi(str_passw_len);
     refresh();
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
     wrefresh(password_win);
@@ -398,9 +419,11 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
     instream.close();
     char key[30];
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Enter key for your password: ");
-    scanw("%s", &key);
-    std::string empty_test;
-    if (empty_test.empty()) {
+    getstr(key);
+    std::string empty_test(key);
+    auto k_length = empty_test.length();
+
+    if (k_length == 0) {
         mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
         curs_set(0);
         return;
@@ -411,6 +434,7 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
     refresh();
 
     std::string passw = generate_password(password_win);
+    if (passw.empty()) return;
 
     std::string final_key = encrypt(std::string(key), CYPHER_KEY);
     std::string final_passw = encrypt(std::string(passw), CYPHER_KEY);
@@ -440,7 +464,6 @@ PassCurses::open_password_file(int CYPHER_KEY) {
     }
 
     instream >> j;
-    std::cout << "testing\n";
     instream.close();
     return j;
 }
