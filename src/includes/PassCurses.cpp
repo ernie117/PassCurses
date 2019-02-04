@@ -51,8 +51,8 @@ PassCurses::resize_redraw() {
     refresh();
     int resize_rows, resize_columns;
     getmaxyx(stdscr, resize_rows, resize_columns);
-    int newx = (resize_columns / 2) - (WIDTH / 2);
-    int newy = (resize_rows / 2) - (HEIGHT);
+    const auto newx = (resize_columns / 2) - (WIDTH / 2);
+    const auto newy = (resize_rows / 2) - (HEIGHT);
 
     return {newy, newx};
 }
