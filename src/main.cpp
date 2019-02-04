@@ -7,7 +7,10 @@
 int main()
 {
     const int CYPHER_KEY = set_key();
-    if (!fs::exists(CURRENT_PATH + "/data/passrc")) create_rc(CYPHER_KEY);
+
+    if (!fs::exists(HOME_DIRECTORY + "/.passcurses")) create_data_directory(HOME_DIRECTORY);
+    if (!fs::exists(HOME_DIRECTORY + "/.passcurses/passrc")) create_rc(CYPHER_KEY);
+    if (!fs::exists(HOME_DIRECTORY + "/.passcurses/testing.json")) create_password_file(CYPHER_KEY);
 
     if (!authenticate(CYPHER_KEY)) return 0;
     JSON j = open_password_file(CYPHER_KEY);

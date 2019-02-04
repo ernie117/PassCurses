@@ -4,7 +4,8 @@
 namespace fs = std::filesystem;
 using JSON = nlohmann::json;
 using namespace PassCurses;
-const std::string CURRENT_PATH = fs::current_path();
+const std::string CURRENT_PATH   = fs::current_path();
+const std::string HOME_DIRECTORY = get_home_directory();
 const int WIDTH = 30;
 const int HEIGHT = 13;
 const int BOX_SPACE = 11;
@@ -84,7 +85,7 @@ PassCurses::create_rc(const int &CYPHER_KEY) {
     ch = getchar();
     if (ch != 'y') std::exit(EXIT_FAILURE);
 
-    std::ofstream outstream(CURRENT_PATH + "/data/passrc");
+    std::ofstream outstream(HOME_DIRECTORY + "/.passcurses/passrc");
     if (!outstream.is_open()) {
         std::cout << "COULD NOT CREATE FILE!\n";
         std::exit(EXIT_FAILURE);
@@ -109,12 +110,38 @@ PassCurses::create_rc(const int &CYPHER_KEY) {
 }
 
 
+inline std::string
+PassCurses::get_home_directory() {
+    struct passwd *pwd = getpwuid(getuid());
+
+    const char* home_directory = pwd->pw_dir;
+
+    return std::string(home_directory);
+}
+
+
+inline void
+PassCurses::create_data_directory(std::string home_directory) {
+    char choice;
+    std::cout << "Create new directory for data files? y/n \n";
+    choice = getchar();
+    std::cin.ignore();
+    if (choice == 'y') {
+        if (fs::create_directory(home_directory + "/.passcurses")) {
+            std::cout << "Directory creation successful" << std::endl;
+        } else {
+            std::cout << "Could not create passcurses home directory!" << std::endl;
+        }
+    } else std::exit(EXIT_FAILURE);
+}
+
+
 /*
  * Getting master password from user, comparing to file
  */
 std::string
 PassCurses::read_master_password(const int &CYPHER_KEY) {
-    std::ifstream instream(CURRENT_PATH + "/data/passrc");
+    std::ifstream instream(HOME_DIRECTORY + "/.passcurses/passrc");
     if (instream.fail()) {
         std::cerr << "CANNOT OPEN PASSRC" << std::endl;
     }
@@ -266,7 +293,7 @@ PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, const 
  */
 void
 PassCurses::write_to_file(JSON &j) {
-    std::ofstream outstream(CURRENT_PATH + "/data/testing.json");
+    std::ofstream outstream(HOME_DIRECTORY + "/.passcurses/testing.json");
     if (!outstream.is_open()) {
         std::cerr << "CAN'T WRITE TO FILE!" << std::endl;
         return;
@@ -286,7 +313,7 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
     std::ifstream instream;
-    instream.open(CURRENT_PATH + "/data/testing.json");
+    instream.open(HOME_DIRECTORY + "/.passcurses/testing.json");
     if (!instream.is_open()) {
         std::cerr << "FILE NOT FOUND!" << std::endl;
         return;
@@ -355,11 +382,10 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
 void
 PassCurses::create_password_file(const int &CYPHER_KEY) {
     JSON j;
-    std::ofstream outstream(CURRENT_PATH + "/data/testing.json");
+    std::ofstream outstream(get_home_directory() + "/.passcurses/testing.json");
 
     std::string key, value;
     std::cout << "Enter test key: ";
-    std::cin.ignore();
     std::getline(std::cin, key);
     std::cout << "Enter test password: ";
     std::getline(std::cin, value);
@@ -432,7 +458,7 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER
     getmaxyx(stdscr, rows, columns);
 
     std::ifstream instream;
-    instream.open(CURRENT_PATH + "/data/testing.json");
+    instream.open(HOME_DIRECTORY + "/.passcurses/testing.json");
     if (!instream.is_open()) {
         std::cerr << "FILE NOT FOUND!" << std::endl;
         std::exit(1);
@@ -469,7 +495,8 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER
 JSON
 PassCurses::open_password_file(const int &CYPHER_KEY) {
     JSON j;
-    std::ifstream instream(CURRENT_PATH + "/data/testing.json");
+    std::string home_directory = get_home_directory();
+    std::ifstream instream(home_directory + "/.passcurses/testing.json");
     if (instream.fail()) {
         instream.close();
         char ch;
@@ -477,7 +504,7 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
         ch = getchar();
         if (ch == 'y') {
             create_password_file(CYPHER_KEY);
-            std::ifstream new_instream(CURRENT_PATH + "/data/testing.json");
+            std::ifstream new_instream(home_directory + "/.passcurses/testing.json");
             new_instream >> j;
             new_instream.close();
             return j;

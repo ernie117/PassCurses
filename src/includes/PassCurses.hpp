@@ -3,6 +3,9 @@
 #include <iostream>
 #include <ncurses.h>
 #include <termios.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <fstream>
 #include <unistd.h>
 #include <iomanip>
@@ -49,6 +52,16 @@ namespace PassCurses {
      */
     void
     create_rc(const int &CYPHER_KEY);
+
+    std::string
+    get_home_directory();
+
+
+    /*
+     * Creates directory for data files
+     */
+    void
+    create_data_directory(std::string home_directory);
 
 
     void
@@ -120,7 +133,7 @@ namespace PassCurses {
      * Opens password file, if it exists
      */
     nlohmann::json
-    open_password_file(const int &CYPHER_KEY); 
+    open_password_file(const int &CYPHER_KEY);
 
     void
     inline copy_password_to_clipboard(nlohmann::json &j, int highlight, const int &CYPHER_KEY);
