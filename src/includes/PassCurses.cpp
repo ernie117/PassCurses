@@ -9,6 +9,23 @@ const int WIDTH = 30;
 const int HEIGHT = 13;
 const int BOX_SPACE = 11;
 
+extern const std::vector<std::string> HELP_STRINGS {
+        "'j' to scroll down",
+        "'k' to scroll up",
+        "'d' to decrypt password",
+        "'c' to copy password to clipboard",
+        "'a' to add new custom password",
+        "'r' to generate new password",
+        "'q' to quit"};
+
+extern const std::vector<std::string> BLANK_HELP_STRINGS {
+        "                  ",
+        "                ",
+        "                       ",
+        "                                 ",
+        "                              ",
+        "                            ",
+        "           "};
 
 /*
  * Encrypts messages with XOR encryption
@@ -496,23 +513,16 @@ inline PassCurses::print_help_message(bool help_printed) {
     auto starting_row = (rows/2)+(HEIGHT*0.05);
     auto starting_col = (cols/2)-(WIDTH/2);
     if (!help_printed) {
-        mvprintw(0, cols, "%s", "Press:");
-        mvprintw(starting_row+1, starting_col, "%s", "'j' to scroll down");
-        mvprintw(starting_row+2, starting_col, "%s", "'k' to scroll up");
-        mvprintw(starting_row+3, starting_col, "%s", "'d' to decrypt password");
-        mvprintw(starting_row+4, starting_col, "%s", "'c' to copy password to clipboard");
-        mvprintw(starting_row+5, starting_col, "%s", "'a' to add new custom password");
-        mvprintw(starting_row+6, starting_col, "%s", "'r' to generate new password");
-        mvprintw(starting_row+7, starting_col, "%s", "'q' to quit");
+        mvprintw(starting_row, cols, "%s", "                        ");
+        mvprintw(starting_row, cols, "%s", "Press:");
+        for (auto & str : HELP_STRINGS) {
+            mvprintw(++starting_row, starting_col, "%s", str.c_str());
+        }
         help_printed = true;
     } else {
-        mvprintw(starting_row+1, starting_col, "%s", "                  ");
-        mvprintw(starting_row+2, starting_col, "%s", "                  ");
-        mvprintw(starting_row+3, starting_col, "%s", "                       ");
-        mvprintw(starting_row+4, starting_col, "%s", "                                 ");
-        mvprintw(starting_row+5, starting_col, "%s", "                              ");
-        mvprintw(starting_row+6, starting_col, "%s", "                            ");
-        mvprintw(starting_row+7, starting_col, "%s", "           ");
+        for (auto & str : BLANK_HELP_STRINGS) {
+            mvprintw(++starting_row, starting_col, "%s", str.c_str());
+        }
         help_printed = false;
     }
 
