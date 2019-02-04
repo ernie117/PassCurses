@@ -105,7 +105,7 @@ namespace PassCurses {
     /*
      * Add a user-defined password to the nlohmann::json file
      */
-    void
+    bool
     add_password(nlohmann::json &j, WINDOW *password_win, const int &CYPHER_KEY);
 
 
@@ -126,7 +126,7 @@ namespace PassCurses {
     /*
      * Generates new random password, applies it to password JSON, calls generate_password()
      */
-    void
+    bool
     new_random_password(nlohmann::json &j, WINDOW *password_win, const int &CYPHER_KEY);
 
     /*

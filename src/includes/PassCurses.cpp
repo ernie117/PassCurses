@@ -307,7 +307,7 @@ PassCurses::write_to_file(JSON &j) {
 /*
  * Add a user-defined password to the JSON file
  */
-void
+bool
 PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
 
     int rows, columns;
@@ -316,7 +316,7 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     instream.open(HOME_DIRECTORY + "/.passcurses/testing.json");
     if (!instream.is_open()) {
         std::cerr << "FILE NOT FOUND!" << std::endl;
-        return;
+        return false;
     }
 
     // If there's already a file with some data in, read it in
@@ -337,7 +337,7 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     if (k_length == 0) {
         mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
         curs_set(0);
-        return;
+        return false;
     }
 
     termios old_term;
@@ -358,7 +358,7 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     if (p_length == 0) {
         mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
         curs_set(0);
-        return;
+        return false;
     }
 
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                     ");
@@ -373,6 +373,8 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
 
     write_to_file(j);
     curs_set(0);
+
+    return true;
 }
 
 
@@ -452,7 +454,7 @@ PassCurses::generate_password(WINDOW *password_win) {
 /*
  * Generates new random password, applies it to JSON file
  */
-void
+bool
 PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     int columns, rows;
     getmaxyx(stdscr, rows, columns);
@@ -476,7 +478,7 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER
     if (k_length == 0) {
         mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
         curs_set(0);
-        return;
+        return false;
     }
 
     mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              \r");
@@ -484,12 +486,13 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER
     refresh();
 
     std::string passw = generate_password(password_win);
-    if (passw.empty()) return;
+    if (passw.empty()) return false;
 
     std::string final_key = encrypt(std::string(key), CYPHER_KEY);
     std::string final_passw = encrypt(std::string(passw), CYPHER_KEY);
     j[final_key] = final_passw; // setting the new/overridden value
 
+    return true;
 }
 
 JSON

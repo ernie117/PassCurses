@@ -34,6 +34,7 @@ int main()
     auto highlight = 1;  // which printed line to highlight
     auto decrypted = false;  // tracking whether a password has been decrypted
     auto helped    = false;  // tracking whether help has been printed
+    auto added     = false;  // tracking whether passwords were successfully added
 
     print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
     for (;;) {
@@ -83,13 +84,13 @@ int main()
                 print_passwords(password_win, highlight, j, CYPHER_KEY, false, true);
                 break;
             case 'a':
-                add_password(j, password_win, CYPHER_KEY);
-                j_compare++; // So scrolling knows to go all the way to the bottom of passwords
+                added = add_password(j, password_win, CYPHER_KEY);
+                if (added) j_compare++; // So scrolling knows to go all the way to the bottom of passwords
                 print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
                 break;
             case 'r':
-                new_random_password(j, password_win, CYPHER_KEY);
-                j_compare++; // So scrolling knows to go all the way to the bottom of passwords
+                added = new_random_password(j, password_win, CYPHER_KEY);
+                if (added) j_compare++; // So scrolling knows to go all the way to the bottom of passwords
                 write_to_file(j);
                 print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
                 break;
