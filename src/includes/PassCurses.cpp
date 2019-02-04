@@ -13,7 +13,7 @@ const int BOX_SPACE = 11;
 /*
  * Encrypts messages with XOR encryption
  */
-inline std::string PassCurses::encrypt(std::string message, int CYPHER_KEY) {
+inline std::string PassCurses::encrypt(std::string message, const int &CYPHER_KEY) {
     for (std::string::size_type i = 0; i < message.size(); i++) message[i] ^= CYPHER_KEY;
 
     return message;
@@ -23,7 +23,7 @@ inline std::string PassCurses::encrypt(std::string message, int CYPHER_KEY) {
 /*
  * Decrypts XOR-encrypted messages
  */
-inline std::string PassCurses::decrypt(std::string message, int CYPHER_KEY) { return encrypt(message, CYPHER_KEY); }
+inline std::string PassCurses::decrypt(std::string message, const int &CYPHER_KEY) { return encrypt(message, CYPHER_KEY); }
 
 
 /*
@@ -44,7 +44,7 @@ PassCurses::initialize_ncurses() {
 /*
  * Called when window resizes, computes new dimensions
  */
-inline std::tuple<int, int>
+inline std::tuple<const int, const int>
 PassCurses::resize_redraw() {
     clear();
     endwin();
@@ -58,7 +58,7 @@ PassCurses::resize_redraw() {
 }
 
 
-void PassCurses::create_rc(int CYPHER_KEY) {
+void PassCurses::create_rc(const int &CYPHER_KEY) {
     char ch;
     std::cout << "passrc not present, create? y/n \n";
     ch = getchar();
@@ -93,7 +93,7 @@ void PassCurses::create_rc(int CYPHER_KEY) {
  * Getting master password from user, comparing to file
  */
 std::string
-PassCurses::read_master_password(int CYPHER_KEY) {
+PassCurses::read_master_password(const int &&CYPHER_KEY) {
     std::ifstream instream(CURRENT_PATH + "/data/passrc");
     if (instream.fail()) {
         std::cerr << "CANNOT OPEN PASSRC" << std::endl;
@@ -103,7 +103,9 @@ PassCurses::read_master_password(int CYPHER_KEY) {
     std::getline(instream, master_password);
     instream.close();
 
-    return decrypt(master_password, CYPHER_KEY);
+    const std::string master_password = decrypt(master_password, CYPHER_KEY);
+
+    return master_password;
 }
 
 
@@ -136,7 +138,7 @@ PassCurses::set_key() {
  * Authenticating the user through password check
  */
 bool
-PassCurses::authenticate(int CYPHER_KEY) {
+PassCurses::authenticate(const int &CYPHER_KEY) {
     termios old_term;
     tcgetattr(STDIN_FILENO, &old_term);
     termios new_term = old_term;

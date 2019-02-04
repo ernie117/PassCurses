@@ -23,26 +23,26 @@ namespace PassCurses {
     /*
      * Encrypts messages with XOR encryption
      */
-    inline std::string encrypt(std::string message, int CYPHER_KEY);
+    inline std::string encrypt(std::string message, const int &CYPHER_KEY);
 
 
     /*
      * Decrypts XOR-encrypted messages
      */
-    inline std::string decrypt(std::string message, int CYPHER_KEY);
+    inline std::string decrypt(std::string message, const int &CYPHER_KEY);
 
 
     /*
      * Respond to window resize by redrawing
      */
-    inline std::tuple<int, int>
+    inline std::tuple<const int, const int>
     resize_redraw();
 
 
     /*
      * Creates a passrc if one doesn't already exist
      */
-    void create_rc(int CYPHER_KEY);
+    void create_rc(const int &CYPHER_KEY);
 
 
     void initialize_ncurses();
@@ -51,7 +51,7 @@ namespace PassCurses {
      * Getting master password from user, comparing to file
      */
     std::string
-    read_master_password(int CYPHER_KEY);
+    read_master_password(const int &CYPHER_KEY);
 
 
     /*
@@ -65,7 +65,7 @@ namespace PassCurses {
      * Authenticating the user through password check
      */
     bool
-    authenticate(int CYPHER_KEY);
+    authenticate(const int &CYPHER_KEY);
 
 
     /*
