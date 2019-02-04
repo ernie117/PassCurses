@@ -102,7 +102,7 @@ namespace PassCurses {
 
 
     /*
-     * Generates new random password, applies it to nlohmann::json file
+     * Generates new random password, applies it to password JSON, calls generate_password()
      */
     void
     new_random_password(nlohmann::json &j, WINDOW *password_win, int CYPHER_KEY);
