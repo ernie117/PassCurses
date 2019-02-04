@@ -30,7 +30,8 @@ const std::vector<std::string> BLANK_HELP_STRINGS {
 /*
  * Encrypts messages with XOR encryption
  */
-inline std::string PassCurses::encrypt(std::string message, const int &CYPHER_KEY) {
+inline std::string
+PassCurses::encrypt(std::string message, const int &CYPHER_KEY) {
     for (std::string::size_type i = 0; i < message.size(); i++) message[i] ^= CYPHER_KEY;
 
     return message;
@@ -40,7 +41,8 @@ inline std::string PassCurses::encrypt(std::string message, const int &CYPHER_KE
 /*
  * Decrypts XOR-encrypted messages
  */
-inline std::string PassCurses::decrypt(std::string message, const int &CYPHER_KEY) { return encrypt(message, CYPHER_KEY); }
+inline std::string
+PassCurses::decrypt(std::string message, const int &CYPHER_KEY) { return encrypt(message, CYPHER_KEY); }
 
 
 /*
@@ -75,7 +77,8 @@ PassCurses::resize_redraw() {
 }
 
 
-void PassCurses::create_rc(const int &CYPHER_KEY) {
+void
+PassCurses::create_rc(const int &CYPHER_KEY) {
     char ch;
     std::cout << "passrc not present, create? y/n \n";
     ch = getchar();
@@ -277,7 +280,8 @@ PassCurses::write_to_file(JSON &j) {
 /*
  * Add a user-defined password to the JSON file
  */
-void PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
+void
+PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
 
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
@@ -348,7 +352,8 @@ void PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_K
 /*
  * Create a JSON password file if none exists
  */
-void PassCurses::create_password_file(const int &CYPHER_KEY) {
+void
+PassCurses::create_password_file(const int &CYPHER_KEY) {
     JSON j;
     std::ofstream outstream(CURRENT_PATH + "/data/testing.json");
 

@@ -26,13 +26,15 @@ namespace PassCurses {
     /*
      * Encrypts messages with XOR encryption
      */
-    inline std::string encrypt(std::string message, const int &CYPHER_KEY);
+    inline std::string
+    encrypt(std::string message, const int &CYPHER_KEY);
 
 
     /*
      * Decrypts XOR-encrypted messages
      */
-    inline std::string decrypt(std::string message, const int &CYPHER_KEY);
+    inline std::string
+    decrypt(std::string message, const int &CYPHER_KEY);
 
 
     /*
@@ -45,10 +47,12 @@ namespace PassCurses {
     /*
      * Creates a passrc if one doesn't already exist
      */
-    void create_rc(const int &CYPHER_KEY);
+    void
+    create_rc(const int &CYPHER_KEY);
 
 
-    void initialize_ncurses();
+    void
+    initialize_ncurses();
 
     /*
      * Getting master password from user, comparing to file
@@ -88,13 +92,15 @@ namespace PassCurses {
     /*
      * Add a user-defined password to the nlohmann::json file
      */
-    void add_password(nlohmann::json &j, WINDOW *password_win, const int &CYPHER_KEY);
+    void
+    add_password(nlohmann::json &j, WINDOW *password_win, const int &CYPHER_KEY);
 
 
     /*
      * Create a nlohmann::json password file if none exists
      */
-    void create_password_file(const int &CYPHER_KEY);
+    void
+    create_password_file(const int &CYPHER_KEY);
 
 
     /*
