@@ -93,7 +93,7 @@ void PassCurses::create_rc(const int &CYPHER_KEY) {
  * Getting master password from user, comparing to file
  */
 std::string
-PassCurses::read_master_password(const int &&CYPHER_KEY) {
+PassCurses::read_master_password(const int &CYPHER_KEY) {
     std::ifstream instream(CURRENT_PATH + "/data/passrc");
     if (instream.fail()) {
         std::cerr << "CANNOT OPEN PASSRC" << std::endl;
@@ -103,9 +103,9 @@ PassCurses::read_master_password(const int &&CYPHER_KEY) {
     std::getline(instream, master_password);
     instream.close();
 
-    const std::string master_password = decrypt(master_password, CYPHER_KEY);
+    const std::string final_master_password = decrypt(master_password, CYPHER_KEY);
 
-    return master_password;
+    return final_master_password;
 }
 
 
@@ -179,7 +179,7 @@ PassCurses::authenticate(const int &CYPHER_KEY) {
  * Prints the passwords into position in ncurses box
  */
 void
-PassCurses::print_passwords(WINDOW *password_win, int &highlight, JSON &j, const int &CYPHER_KEY, bool to_decrypt, bool is_copied) {
+PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, const int &CYPHER_KEY, bool to_decrypt, bool is_copied) {
 
     int x = 2, y = 1; // Positions for printed text
 
@@ -471,7 +471,7 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
 }
 
 void
-inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, const int &CYPHER_KEY) {
+inline PassCurses::copy_password_to_clipboard(JSON &j, int highlight, const int &CYPHER_KEY) {
     int indx = 0;
     for (auto& [key, value] : j.items()) {
         indx++;
@@ -491,26 +491,28 @@ inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, con
 
 bool
 inline PassCurses::print_help_message(bool help_printed) {
-    int columns, rows;
-    getmaxyx(stdscr, rows, columns);
+    int cols, rows;
+    getmaxyx(stdscr, rows, cols);
+    auto starting_row = (rows/2)+(HEIGHT*0.05);
+    auto starting_col = (cols/2)-(WIDTH/2);
     if (!help_printed) {
-        mvprintw(0, columns, "%s", "Press:");
-        mvprintw((rows/2)+(HEIGHT*0.05)+1, (columns/2)-(WIDTH/2), "%s", "'j' to scroll down");
-        mvprintw((rows/2)+(HEIGHT*0.05)+2, (columns/2)-(WIDTH/2), "%s", "'k' to scroll up");
-        mvprintw((rows/2)+(HEIGHT*0.05)+3, (columns/2)-(WIDTH/2), "%s", "'d' to decrypt password");
-        mvprintw((rows/2)+(HEIGHT*0.05)+4, (columns/2)-(WIDTH/2), "%s", "'c' to copy password to clipboard");
-        mvprintw((rows/2)+(HEIGHT*0.05)+5, (columns/2)-(WIDTH/2), "%s", "'a' to add new custom password");
-        mvprintw((rows/2)+(HEIGHT*0.05)+6, (columns/2)-(WIDTH/2), "%s", "'r' to generate new password");
-        mvprintw((rows/2)+(HEIGHT*0.05)+7, (columns/2)-(WIDTH/2), "%s", "'q' to quit");
+        mvprintw(0, cols, "%s", "Press:");
+        mvprintw(starting_row+1, starting_col, "%s", "'j' to scroll down");
+        mvprintw(starting_row+2, starting_col, "%s", "'k' to scroll up");
+        mvprintw(starting_row+3, starting_col, "%s", "'d' to decrypt password");
+        mvprintw(starting_row+4, starting_col, "%s", "'c' to copy password to clipboard");
+        mvprintw(starting_row+5, starting_col, "%s", "'a' to add new custom password");
+        mvprintw(starting_row+6, starting_col, "%s", "'r' to generate new password");
+        mvprintw(starting_row+7, starting_col, "%s", "'q' to quit");
         help_printed = true;
     } else {
-        mvprintw((rows/2)+(HEIGHT*0.05)+1, (columns/2)-(WIDTH/2), "%s", "                  ");
-        mvprintw((rows/2)+(HEIGHT*0.05)+2, (columns/2)-(WIDTH/2), "%s", "                  ");
-        mvprintw((rows/2)+(HEIGHT*0.05)+3, (columns/2)-(WIDTH/2), "%s", "                       ");
-        mvprintw((rows/2)+(HEIGHT*0.05)+4, (columns/2)-(WIDTH/2), "%s", "                                 ");
-        mvprintw((rows/2)+(HEIGHT*0.05)+5, (columns/2)-(WIDTH/2), "%s", "                              ");
-        mvprintw((rows/2)+(HEIGHT*0.05)+6, (columns/2)-(WIDTH/2), "%s", "                            ");
-        mvprintw((rows/2)+(HEIGHT*0.05)+7, (columns/2)-(WIDTH/2), "%s", "           ");
+        mvprintw(starting_row+1, starting_col, "%s", "                  ");
+        mvprintw(starting_row+2, starting_col, "%s", "                  ");
+        mvprintw(starting_row+3, starting_col, "%s", "                       ");
+        mvprintw(starting_row+4, starting_col, "%s", "                                 ");
+        mvprintw(starting_row+5, starting_col, "%s", "                              ");
+        mvprintw(starting_row+6, starting_col, "%s", "                            ");
+        mvprintw(starting_row+7, starting_col, "%s", "           ");
         help_printed = false;
     }
 

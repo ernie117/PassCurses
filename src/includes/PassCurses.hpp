@@ -72,7 +72,7 @@ namespace PassCurses {
      * Prints the passwords into position in ncurses box
      */
     void
-    print_passwords(WINDOW *password_win, int &highlight, nlohmann::json &j, const int &CYPHER_KEY, bool to_decrypt, bool is_copied);
+    print_passwords(WINDOW *password_win, int highlight, nlohmann::json &j, const int &CYPHER_KEY, bool to_decrypt, bool is_copied);
 
 
     /*
@@ -114,7 +114,7 @@ namespace PassCurses {
     open_password_file(const int &CYPHER_KEY); 
 
     void
-    inline copy_password_to_clipboard(nlohmann::json &j, const int &highlight, const int &CYPHER_KEY);
+    inline copy_password_to_clipboard(nlohmann::json &j, int highlight, const int &CYPHER_KEY);
 
     bool
     inline print_help_message(bool help_printed);

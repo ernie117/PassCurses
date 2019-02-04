@@ -45,7 +45,7 @@ int main()
             }
             case KEY_DOWN:
             case 106:
-                if (highlight == j_compare+1) highlight = 2;
+                if (highlight == j_compare+1) highlight = 1;
                 else ++highlight;
                 if (decrypted) {
                     print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
