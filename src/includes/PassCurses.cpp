@@ -513,8 +513,6 @@ inline PassCurses::print_help_message(bool help_printed) {
     auto starting_row = (rows/2)+(HEIGHT*0.05);
     auto starting_col = (cols/2)-(WIDTH/2);
     if (!help_printed) {
-        mvprintw(starting_row, cols, "%s", "                        ");
-        mvprintw(starting_row, cols, "%s", "Press:");
         for (auto & str : HELP_STRINGS) {
             mvprintw(++starting_row, starting_col, "%s", str.c_str());
         }
