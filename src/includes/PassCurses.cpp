@@ -179,7 +179,7 @@ PassCurses::authenticate(const int &CYPHER_KEY) {
  * Prints the passwords into position in ncurses box
  */
 void
-PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, int CYPHER_KEY, bool to_decrypt, bool is_copied) {
+PassCurses::print_passwords(WINDOW *password_win, int &highlight, JSON &j, const int &CYPHER_KEY, bool to_decrypt, bool is_copied) {
 
     int x = 2, y = 1; // Positions for printed text
 
@@ -260,7 +260,7 @@ PassCurses::write_to_file(JSON &j) {
 /*
  * Add a user-defined password to the JSON file
  */
-void PassCurses::add_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
+void PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
 
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
@@ -331,7 +331,7 @@ void PassCurses::add_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
 /*
  * Create a JSON password file if none exists
  */
-void PassCurses::create_password_file(int CYPHER_KEY) {
+void PassCurses::create_password_file(const int &CYPHER_KEY) {
     JSON j;
     std::ofstream outstream(CURRENT_PATH + "/data/testing.json");
 
@@ -405,7 +405,7 @@ PassCurses::generate_password(WINDOW *password_win) {
  * Generates new random password, applies it to JSON file
  */
 void
-PassCurses::new_random_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
+PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     int columns, rows;
     getmaxyx(stdscr, rows, columns);
 
@@ -445,7 +445,7 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, int CYPHER_KEY) {
 }
 
 JSON
-PassCurses::open_password_file(int CYPHER_KEY) {
+PassCurses::open_password_file(const int &CYPHER_KEY) {
     JSON j;
     std::ifstream instream(CURRENT_PATH + "/data/testing.json");
     if (instream.fail()) {
@@ -471,7 +471,7 @@ PassCurses::open_password_file(int CYPHER_KEY) {
 }
 
 void
-inline PassCurses::copy_password_to_clipboard(JSON &j, int highlight, int CYPHER_KEY) {
+inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, const int &CYPHER_KEY) {
     int indx = 0;
     for (auto& [key, value] : j.items()) {
         indx++;

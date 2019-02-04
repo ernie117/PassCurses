@@ -72,7 +72,7 @@ namespace PassCurses {
      * Prints the passwords into position in ncurses box
      */
     void
-    print_passwords(WINDOW *password_win, int highlight, nlohmann::json &j, int CYPHER_KEY, bool to_decrypt, bool is_copied);
+    print_passwords(WINDOW *password_win, int &highlight, nlohmann::json &j, const int &CYPHER_KEY, bool to_decrypt, bool is_copied);
 
 
     /*
@@ -85,13 +85,13 @@ namespace PassCurses {
     /*
      * Add a user-defined password to the nlohmann::json file
      */
-    void add_password(nlohmann::json &j, WINDOW *password_win, int CYPHER_KEY);
+    void add_password(nlohmann::json &j, WINDOW *password_win, const int &CYPHER_KEY);
 
 
     /*
      * Create a nlohmann::json password file if none exists
      */
-    void create_password_file(int CYPHER_KEY);
+    void create_password_file(const int &CYPHER_KEY);
 
 
     /*
@@ -105,16 +105,16 @@ namespace PassCurses {
      * Generates new random password, applies it to password JSON, calls generate_password()
      */
     void
-    new_random_password(nlohmann::json &j, WINDOW *password_win, int CYPHER_KEY);
+    new_random_password(nlohmann::json &j, WINDOW *password_win, const int &CYPHER_KEY);
 
     /*
      * Opens password file, if it exists
      */
     nlohmann::json
-    open_password_file(int CYPHER_KEY); 
+    open_password_file(const int &CYPHER_KEY); 
 
     void
-    inline copy_password_to_clipboard(nlohmann::json &j, int highlight, int CYPHER_KEY);
+    inline copy_password_to_clipboard(nlohmann::json &j, const int &highlight, const int &CYPHER_KEY);
 
     bool
     inline print_help_message(bool help_printed);
