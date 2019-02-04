@@ -19,6 +19,7 @@ extern const int START_Y;
 extern const int START_X;
 
 extern const std::vector<std::string> HELP_STRINGS;
+extern const std::vector<std::string> BLANK_HELP_STRINGS;
 
 namespace PassCurses {
 

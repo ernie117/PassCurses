@@ -9,7 +9,7 @@ const int WIDTH = 30;
 const int HEIGHT = 13;
 const int BOX_SPACE = 11;
 
-extern const std::vector<std::string> HELP_STRINGS {
+const std::vector<std::string> HELP_STRINGS {
         "'j' to scroll down",
         "'k' to scroll up",
         "'d' to decrypt password",
@@ -18,7 +18,7 @@ extern const std::vector<std::string> HELP_STRINGS {
         "'r' to generate new password",
         "'q' to quit"};
 
-extern const std::vector<std::string> BLANK_HELP_STRINGS {
+const std::vector<std::string> BLANK_HELP_STRINGS {
         "                  ",
         "                ",
         "                       ",
