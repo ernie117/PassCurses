@@ -2,13 +2,17 @@
 #include "json.hpp"
 
 namespace fs = std::filesystem;
-using JSON = nlohmann::json;
 using namespace PassCurses;
+
+using JSON = nlohmann::json;
+
+const int WIDTH     = 30;
+const int HEIGHT    = 13;
+const int BOX_SPACE = 11;
+
 const std::string CURRENT_PATH   = fs::current_path();
 const std::string HOME_DIRECTORY = get_home_directory();
-const int WIDTH = 30;
-const int HEIGHT = 13;
-const int BOX_SPACE = 11;
+
 
 const std::vector<std::string> HELP_STRINGS {
         "'j' to scroll down",
@@ -228,10 +232,10 @@ PassCurses::authenticate(const int &CYPHER_KEY) {
 void
 PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, const int &CYPHER_KEY, bool to_decrypt, bool is_copied) {
 
-    int x = 2, y = 1; // Positions for printed text
+    auto x = 2, y = 1; // Positions for printed passwords
 
     // If highlight goes higher than box height, then "scrolling" is required
-    int scroll_down_amount = (highlight - BOX_SPACE);
+    auto scroll_down_amount = (highlight - BOX_SPACE);
 
     wclear(password_win);  // Clear the window for renewal
 
@@ -244,9 +248,12 @@ PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, const 
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     init_pair(3, COLOR_RED,   COLOR_BLACK);
 
-    int i = 0;
+    auto i = 0;
     for (auto& [key, value] : j.items()) {
-        if (i == BOX_SPACE) break; // Stop printing once box is "filled"
+        // Stop printing once box is "filled"
+        if (i == BOX_SPACE) break;
+        // Iterate through lines until "view" of passwords is correct
+        // The creates the scrolling effect
         if (scroll_down_amount > 0) {
             scroll_down_amount--;
             highlight--;
@@ -436,7 +443,7 @@ PassCurses::generate_password(WINDOW *password_win) {
 
     char passw[passw_len+1]; // This will hold our randomly-generated characters
     char ch;
-    for (int i = 0; i <= passw_len; i++) {
+    for (auto i = 0; i <= passw_len; i++) {
         ch = uni(rng);
         if ((ch > 90 && ch < 97) || (ch > 57 && ch < 65)) {
             i--;
@@ -495,6 +502,7 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER
     return true;
 }
 
+
 JSON
 PassCurses::open_password_file(const int &CYPHER_KEY) {
     JSON j;
@@ -522,9 +530,13 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
     return j;
 }
 
+
+/*
+ * Everything needs to be in a loop as that's the only way to access the values
+ */
 void
-inline PassCurses::copy_password_to_clipboard(JSON &j, int highlight, const int &CYPHER_KEY) {
-    int indx = 0;
+inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, const int &CYPHER_KEY) {
+    auto indx = 0;
     for (auto& [key, value] : j.items()) {
         indx++;
         if (indx+1 < highlight) continue;
@@ -540,6 +552,7 @@ inline PassCurses::copy_password_to_clipboard(JSON &j, int highlight, const int 
         break;
     }
 }
+
 
 bool
 inline PassCurses::print_help_message(bool help_printed) {

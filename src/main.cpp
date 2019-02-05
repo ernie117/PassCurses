@@ -13,6 +13,7 @@ int main()
     if (!fs::exists(HOME_DIRECTORY + "/.passcurses/testing.json")) create_password_file(CYPHER_KEY);
 
     if (!authenticate(CYPHER_KEY)) return 0;
+
     JSON j = open_password_file(CYPHER_KEY);
 
     initialize_ncurses();
@@ -31,10 +32,10 @@ int main()
 
     int j_compare  = j.size();
     auto choice    = 0;  // char is too small to hold curses KEY values
-    auto highlight = 1;  // which printed line to highlight
+    auto highlight = 1;  // which password to highlight
     auto decrypted = false;  // tracking whether a password has been decrypted
     auto helped    = false;  // tracking whether help has been printed
-    auto added     = false;  // tracking whether passwords were successfully added
+    auto added     = false;  // tracking whether passwords were actually added
 
     print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
     for (;;) {
@@ -90,7 +91,7 @@ int main()
                 break;
             case 'r':
                 added = new_random_password(j, password_win, CYPHER_KEY);
-                if (added) j_compare++; // So scrolling knows to go all the way to the bottom of passwords
+                if (added) j_compare++;
                 write_to_file(j);
                 print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
                 break;

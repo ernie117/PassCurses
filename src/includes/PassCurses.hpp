@@ -136,7 +136,7 @@ namespace PassCurses {
     open_password_file(const int &CYPHER_KEY);
 
     void
-    inline copy_password_to_clipboard(nlohmann::json &j, int highlight, const int &CYPHER_KEY);
+    inline copy_password_to_clipboard(nlohmann::json &j, const int &highlight, const int &CYPHER_KEY);
 
     bool
     inline print_help_message(bool help_printed);
