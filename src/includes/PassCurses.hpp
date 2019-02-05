@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <iomanip>
 #include <random>
+#include <chrono>
+#include <thread>
 #include <tuple>
 #include "json.hpp"
 
@@ -140,4 +142,11 @@ namespace PassCurses {
 
     bool
     inline print_help_message(bool help_printed);
+
+
+    /*
+     * Delete a password entry in the JSON file
+     */
+    bool
+    delete_password_entry(nlohmann::json &j, int highlight, const int &CYPHER_KEY);
 }

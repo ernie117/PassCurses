@@ -21,7 +21,8 @@ const std::vector<std::string> HELP_STRINGS {
         "'c' to copy password to clipboard",
         "'a' to add new custom password",
         "'r' to generate new password",
-        "'q' to quit"};
+        "'q' to quit",
+        "'D' to delete a password"};
 
 const std::vector<std::string> BLANK_HELP_STRINGS {
         "                  ",
@@ -30,7 +31,9 @@ const std::vector<std::string> BLANK_HELP_STRINGS {
         "                                 ",
         "                              ",
         "                            ",
-        "           "};
+        "           ",
+        "                        "};
+
 
 /*
  * Encrypts messages with XOR encryption
@@ -85,7 +88,7 @@ PassCurses::resize_redraw() {
 void
 PassCurses::create_rc(const int &CYPHER_KEY) {
     char ch;
-    std::cout << "passrc not present, create? y/n \n";
+    std::cout << "passrc not present, create? [y]es/[n]o \n";
     ch = getchar();
     if (ch != 'y') std::exit(EXIT_FAILURE);
 
@@ -127,7 +130,7 @@ PassCurses::get_home_directory() {
 inline void
 PassCurses::create_data_directory(std::string home_directory) {
     char choice;
-    std::cout << "Create new directory for data files? y/n \n";
+    std::cout << "Create new directory for data files? [y]es/[n]o \n";
     choice = getchar();
     std::cin.ignore();
     if (choice == 'y') {
@@ -511,7 +514,7 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
     if (instream.fail()) {
         instream.close();
         char ch;
-        std::cout << "No password JSON, create one? y/n \n";
+        std::cout << "No password JSON, create one? [y]es/[n]o \n";
         ch = getchar();
         if (ch == 'y') {
             create_password_file(CYPHER_KEY);
@@ -573,4 +576,43 @@ inline PassCurses::print_help_message(bool help_printed) {
     }
 
     return help_printed;
+}
+
+bool
+PassCurses::delete_password_entry(JSON &j, int highlight, const int &CYPHER_KEY) {
+    char choice;
+    int rows, columns;
+    getmaxyx(stdscr, rows, columns);
+
+    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Delete password? [y]es/[n]o ");
+    choice = mvgetch((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2)+22);
+    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                            ");
+
+    if (choice == 'n') return false;
+    else {
+        auto indx = 0;
+        std::string deleted_key;
+        for (auto& [key, value] : j.items()) {
+            indx++;
+            if (indx+1 < highlight) continue;
+            mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Confirm deletion: [y]es/[n]o ");
+            choice = getch();
+            if (choice == 'n') {
+                mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                                         ");
+                return false;
+            }
+            deleted_key = key;
+            j.erase(key);
+            break;
+        }
+        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                                         ");
+        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "'%s' %s", decrypt(deleted_key, CYPHER_KEY).c_str(),
+                                                                       "password deleted!");
+        getch();
+        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                                         ");
+        write_to_file(j);
+    }
+
+    return true;
+
 }

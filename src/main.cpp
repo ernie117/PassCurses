@@ -34,6 +34,7 @@ int main()
     auto choice    = 0;  // char is too small to hold curses KEY values
     auto highlight = 1;  // which password to highlight
     auto decrypted = false;  // tracking whether a password has been decrypted
+    auto deleted   = false;  // tracking whether a password has been deleted
     auto helped    = false;  // tracking whether help has been printed
     auto added     = false;  // tracking whether passwords were actually added
 
@@ -71,6 +72,10 @@ int main()
                 }
                 break;
             case 'D':
+                deleted = delete_password_entry(j, highlight, CYPHER_KEY);
+                if (deleted) j_compare--;
+                print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
+                break;
             case 'd':
                 if (!decrypted) {
                     print_passwords(password_win, highlight, j, CYPHER_KEY, true, false);
