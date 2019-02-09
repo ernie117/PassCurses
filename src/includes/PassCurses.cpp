@@ -244,6 +244,8 @@ PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, const 
 
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
+    box(stdscr, 0, 0);
+    refresh();
     box(password_win, 0, 0);
 
     mvprintw((rows/2)+(HEIGHT*0.05), (columns/2)-(WIDTH/2), "%s", "press 'h' to toggle help");
@@ -256,7 +258,7 @@ PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, const 
         // Stop printing once box is "filled"
         if (i == BOX_SPACE) break;
         // Iterate through lines until "view" of passwords is correct
-        // The creates the scrolling effect
+        // This creates the scrolling effect
         if (scroll_down_amount > 0) {
             scroll_down_amount--;
             highlight--;

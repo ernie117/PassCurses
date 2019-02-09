@@ -26,6 +26,7 @@ int main()
     const auto START_X = (cols / 2) - (WIDTH / 2);
     WINDOW *password_win = newwin(HEIGHT, WIDTH, START_Y, START_X);
     wbkgd(password_win, COLOR_PAIR(1));
+    wbkgd(stdscr, COLOR_PAIR(1));
     refresh();
     box(password_win, 0, 0);
     wrefresh(password_win);
