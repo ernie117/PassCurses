@@ -22,17 +22,10 @@ const std::vector<std::string> HELP_STRINGS {
         "'a' to add new custom password",
         "'r' to generate new password",
         "'q' to quit",
+        "'gg' to jump to the top",
+        "'G' to jump to the bottom",
+        "'M' to jump to the middle",
         "'D' to delete a password"};
-
-const std::vector<std::string> BLANK_HELP_STRINGS {
-        "                  ",
-        "                ",
-        "                       ",
-        "                                 ",
-        "                              ",
-        "                            ",
-        "           ",
-        "                        "};
 
 
 /*
@@ -571,9 +564,7 @@ inline PassCurses::print_help_message(bool help_printed) {
         }
         help_printed = true;
     } else {
-        for (auto & str : BLANK_HELP_STRINGS) {
-            mvprintw(++starting_row, starting_col, "%s", str.c_str());
-        }
+        clear();
         help_printed = false;
     }
 

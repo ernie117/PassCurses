@@ -35,12 +35,14 @@ int main()
     auto choice    = 0;  // char is too small to hold curses KEY values
     auto highlight = 1;  // which password to highlight
     auto decrypted = false;  // tracking whether a password has been decrypted
+    auto is_copied = false;  // tracking whether a password has been copied
     auto deleted   = false;  // tracking whether a password has been deleted
     auto helped    = false;  // tracking whether help has been printed
     auto added     = false;  // tracking whether passwords were actually added
 
     print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
     for (;;) {
+        is_copied = false;
         choice = getch();
         switch(choice) {
             case KEY_RESIZE: {
@@ -54,59 +56,61 @@ int main()
             case 106:
                 if (highlight == j_compare+1) highlight = 2;
                 else ++highlight;
-                if (decrypted) {
-                    print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
-                    decrypted = false;
-                } else {
-                    print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
-                }
+                if (decrypted) decrypted = false;
                 break;
             case KEY_UP:
             case 107:
                 if (highlight == 1) highlight = j_compare+1;
                 else --highlight;
-                if (decrypted) {
-                    print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
-                    decrypted = false;
-                } else {
-                    print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
-                }
+                if (decrypted) decrypted = false;
                 break;
+            // Vim-like binding to jump to the top
+            case 'g':
+                choice = getch();
+                if (choice == 'g') highlight = 2;
+                break;
+            // Vim-like binding to jump to the bottom
+            case 'G':
+                highlight = j_compare+1;
+                break;
+            // Vim-like binding to jump to the middle
+            case 'M':
+                highlight = (j_compare / 2) + 2;
+                break;
+            // Delete a password
             case 'D':
                 deleted = delete_password_entry(j, highlight, CYPHER_KEY);
                 if (deleted) j_compare--;
-                print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
                 break;
+            // Decrypt a password
             case 'd':
-                if (!decrypted) {
-                    print_passwords(password_win, highlight, j, CYPHER_KEY, true, false);
-                    decrypted = true;
-                } else {
-                    print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
-                    decrypted = false;
-                }
+                if (!decrypted) decrypted = true;
+                else decrypted = false;
                 break;
+            // Copy a password
             case 'c':
                 copy_password_to_clipboard(j, highlight, CYPHER_KEY);
-                print_passwords(password_win, highlight, j, CYPHER_KEY, false, true);
+                is_copied = true;
                 break;
+            // Add a password
             case 'a':
                 added = add_password(j, password_win, CYPHER_KEY);
                 if (added) j_compare++; // So scrolling knows to go all the way to the bottom of passwords
-                print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
                 break;
+            // Generate a random password
             case 'r':
                 added = new_random_password(j, password_win, CYPHER_KEY);
                 if (added) j_compare++;
                 write_to_file(j);
-                print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
                 break;
+            // Show the help lines
             case 'h':
                 helped = print_help_message(helped);
                 break;
             default:
-                print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
+                print_passwords(password_win, highlight, j, CYPHER_KEY, decrypted, is_copied);
         }
+        print_passwords(password_win, highlight, j, CYPHER_KEY, decrypted, is_copied);
         wrefresh(password_win);
         refresh();
         if (choice == 'q') break;
