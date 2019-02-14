@@ -49,7 +49,6 @@ int main()
                 const auto [newY, newX] = resize_redraw();
                 password_win = newwin(HEIGHT, WIDTH, newY, newX);
                 wbkgdset(password_win, COLOR_PAIR(1));
-                print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
                 break;
             }
             case KEY_DOWN:
