@@ -335,8 +335,6 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     curs_set(1);
     char key[30];
     mvprintw(ROWS, COLS, "%s", "Enter key for new password: ");
-    wrefresh(password_win);
-    refresh();
     getstr(key);
     std::string empty_test(key);
     auto k_length = empty_test.length();
@@ -355,10 +353,8 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
 
     char password[30];
-    mvprintw(ROWS, COLS, "%s", "                              ");
-    mvprintw(ROWS, COLS, "%s", "Enter your password: ");
-    wrefresh(password_win);
-    refresh();
+    mvprintw(ROWS, COLS, "%s", "Enter your password:       ");
+    move(ROWS, COLS+21);
     getstr(password);
     std::string empty_pass_test(password);
     auto p_length = empty_pass_test.length();
@@ -612,8 +608,7 @@ PassCurses::delete_password_entry(JSON &j, int highlight, const int &CYPHER_KEY)
             break;
         }
         mvprintw(ROWS, COLS, "%s", "                                         ");
-        mvprintw(ROWS, COLS, "'%s' %s", decrypt(deleted_key, CYPHER_KEY).c_str(),
-                                                                       "password deleted!");
+        mvprintw(ROWS, COLS, "'%s' %s", decrypt(deleted_key, CYPHER_KEY).c_str(), "password deleted!");
         getch();
         mvprintw(ROWS, COLS, "%s", "                                         ");
         write_to_file(j);
