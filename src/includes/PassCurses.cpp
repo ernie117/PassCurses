@@ -317,6 +317,9 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
 
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
+    const auto ROWS = (rows/2)-(HEIGHT+1);
+    const auto COLS = (columns/2)-(WIDTH/2);
+
     std::ifstream instream;
     instream.open(HOME_DIRECTORY + "/.passcurses/testing.json");
     if (!instream.is_open()) {
@@ -331,8 +334,7 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
 
     curs_set(1);
     char key[30];
-    /* std::cin.sync(); */
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Enter key for new password: ");
+    mvprintw(ROWS, COLS, "%s", "Enter key for new password: ");
     wrefresh(password_win);
     refresh();
     getstr(key);
@@ -340,7 +342,8 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     auto k_length = empty_test.length();
 
     if (k_length == 0) {
-        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
+        move(ROWS, COLS);
+        clrtoeol();
         curs_set(0);
         return false;
     }
@@ -352,8 +355,8 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
 
     char password[30];
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Enter your password: ");
+    mvprintw(ROWS, COLS, "%s", "                              ");
+    mvprintw(ROWS, COLS, "%s", "Enter your password: ");
     wrefresh(password_win);
     refresh();
     getstr(password);
@@ -361,12 +364,14 @@ PassCurses::add_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     auto p_length = empty_pass_test.length();
 
     if (p_length == 0) {
-        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
+        move(ROWS, COLS);
+        clrtoeol();
         curs_set(0);
         return false;
     }
 
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                     ");
+    move(ROWS, COLS);
+    clrtoeol();
     refresh();
     wrefresh(password_win);
 
@@ -416,21 +421,24 @@ PassCurses::generate_password(WINDOW *password_win) {
     char char_passw_len[10];
     int columns, rows;
     getmaxyx(stdscr, rows, columns);
+    const auto ROWS = (rows/2)-(HEIGHT+1);
+    const auto COLS = (columns/2)-(WIDTH/2);
 
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                             ");
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Enter length of new password: ");
+    mvprintw(ROWS, COLS, "%s", "                              ");
+    mvprintw(ROWS, COLS, "%s", "Enter length of new password: ");
     getstr(char_passw_len);
     std::string str_passw_len(char_passw_len);
     auto str_p_len = str_passw_len.length();
 
     if (str_p_len == 0) {
-        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
+        move(ROWS, COLS);
+        clrtoeol();
         return "";
     }
 
     auto passw_len = std::stoi(str_passw_len);
     refresh();
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
+    mvprintw(ROWS, COLS, "%s", "                              ");
     wrefresh(password_win);
     refresh();
 
@@ -463,6 +471,8 @@ bool
 PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER_KEY) {
     int columns, rows;
     getmaxyx(stdscr, rows, columns);
+    const auto ROWS = (rows/2)-(HEIGHT+1);
+    const auto COLS = (columns/2)-(WIDTH/2);
 
     std::ifstream instream;
     instream.open(HOME_DIRECTORY + "/.passcurses/testing.json");
@@ -475,18 +485,19 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER
 
     instream.close();
     char key[30];
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Enter key for your password: ");
+    mvprintw(ROWS, COLS, "%s", "Enter key for your password: ");
     getstr(key);
     std::string empty_test(key);
     auto k_length = empty_test.length();
 
     if (k_length == 0) {
-        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              ");
+        move(ROWS, COLS);
+        clrtoeol();
         curs_set(0);
         return false;
     }
 
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                              \r");
+    mvprintw(ROWS, COLS, "%s", "                              ");
     wrefresh(password_win);
     refresh();
 
@@ -576,10 +587,12 @@ PassCurses::delete_password_entry(JSON &j, int highlight, const int &CYPHER_KEY)
     char choice;
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
+    const auto ROWS = (rows/2)-(HEIGHT+1);
+    const auto COLS = (columns/2)-(WIDTH/2);
 
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Delete password? [y]es/[n]o ");
-    choice = mvgetch((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2)+22);
-    mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                            ");
+    mvprintw(ROWS, COLS, "%s", "Delete password? [y]es/[n]o ");
+    choice = mvgetch(ROWS, COLS+22);
+    mvprintw(ROWS, COLS, "%s", "                            ");
 
     if (choice == 'n') return false;
     else {
@@ -588,21 +601,21 @@ PassCurses::delete_password_entry(JSON &j, int highlight, const int &CYPHER_KEY)
         for (auto& [key, value] : j.items()) {
             indx++;
             if (indx+1 < highlight) continue;
-            mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "Confirm deletion: [y]es/[n]o ");
+            mvprintw(ROWS, COLS, "%s", "Confirm deletion: [y]es/[n]o ");
             choice = getch();
             if (choice == 'n') {
-                mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                                         ");
+                mvprintw(ROWS, COLS, "%s", "                                         ");
                 return false;
             }
             deleted_key = key;
             j.erase(key);
             break;
         }
-        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                                         ");
-        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "'%s' %s", decrypt(deleted_key, CYPHER_KEY).c_str(),
+        mvprintw(ROWS, COLS, "%s", "                                         ");
+        mvprintw(ROWS, COLS, "'%s' %s", decrypt(deleted_key, CYPHER_KEY).c_str(),
                                                                        "password deleted!");
         getch();
-        mvprintw((rows/2)-(HEIGHT+1), (columns/2)-(WIDTH/2), "%s", "                                         ");
+        mvprintw(ROWS, COLS, "%s", "                                         ");
         write_to_file(j);
     }
 

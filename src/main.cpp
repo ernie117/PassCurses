@@ -40,7 +40,7 @@ int main()
     auto helped    = false;  // tracking whether help has been printed
     auto added     = false;  // tracking whether passwords were actually added
 
-    print_passwords(password_win, highlight, j, CYPHER_KEY, false, false);
+    print_passwords(password_win, highlight, j, CYPHER_KEY, decrypted, is_copied);
     for (;;) {
         is_copied = false;
         choice = getch();
@@ -115,7 +115,7 @@ int main()
         if (choice == 'q') break;
     }
 
-    clrtoeol();
+    clear();
     endwin();
 
     return 0;
