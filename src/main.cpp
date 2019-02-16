@@ -12,7 +12,7 @@ int main()
     if (!fs::exists(HOME_DIRECTORY + "/.passcurses/passrc")) create_rc(CYPHER_KEY);
     if (!fs::exists(HOME_DIRECTORY + "/.passcurses/testing.json")) create_password_file(CYPHER_KEY);
 
-    if (!authenticate(CYPHER_KEY)) return 0;
+    /* if (!authenticate(CYPHER_KEY)) return 0; */
 
     JSON j = open_password_file(CYPHER_KEY);
 
@@ -68,11 +68,11 @@ int main()
                 choice = getch();
                 if (choice == 'g') highlight = 2;
                 break;
-            // Vim-like binding to jump to the bottom
+            // Jump to the bottom
             case 'G':
                 highlight = j_compare+1;
                 break;
-            // Vim-like binding to jump to the middle
+            // Jump to the middle
             case 'M':
                 highlight = (j_compare / 2) + 2;
                 break;
@@ -81,7 +81,7 @@ int main()
                 deleted = delete_password_entry(j, highlight, CYPHER_KEY);
                 if (deleted) j_compare--;
                 break;
-            // Decrypt a password
+            // Decrypt/encrypt a password
             case 'd':
                 if (!decrypted) decrypted = true;
                 else decrypted = false;

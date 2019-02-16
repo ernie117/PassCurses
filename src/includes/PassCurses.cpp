@@ -25,7 +25,8 @@ const std::vector<std::string> HELP_STRINGS {
         "'gg' to jump to the top",
         "'G' to jump to the bottom",
         "'M' to jump to the middle",
-        "'D' to delete a password"};
+        "'D' to delete a password"
+};
 
 
 /*
@@ -260,16 +261,19 @@ PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, const 
         // Print highlighted line
         if (highlight == i+2) {
             wattron(password_win, A_STANDOUT);
-            if (to_decrypt) {
+            if ((to_decrypt) && (is_copied)) {
+                mvwprintw(password_win, y, x, "%s copied!",
+                          decrypt(key, CYPHER_KEY).c_str());
+            } else if ((!to_decrypt) && (is_copied)) {
+                mvwprintw(password_win, y, x, "%s copied!",
+                          decrypt(key, CYPHER_KEY).c_str());
+            } else if (to_decrypt) {
                 wattron(password_win, COLOR_PAIR(2));
                 mvwprintw(password_win, y, x, "%s: %s",
                           decrypt(key, CYPHER_KEY).c_str(),
                           decrypt(value.get<std::string>(), CYPHER_KEY).c_str());
 
                 wattroff(password_win, COLOR_PAIR(2));
-            } else if (is_copied) {
-                mvwprintw(password_win, y, x, "%s copied!",
-                          decrypt(key, CYPHER_KEY).c_str());
             } else {
                 wattron(password_win, COLOR_PAIR(3));
                 mvwprintw(password_win, y, x, "%s: %s",
@@ -434,11 +438,12 @@ PassCurses::generate_password(WINDOW *password_win) {
 
     auto passw_len = std::stoi(str_passw_len);
     refresh();
-    mvprintw(ROWS, COLS, "%s", "                              ");
+    move(ROWS, COLS);
+    clrtoeol();
     wrefresh(password_win);
     refresh();
 
-    // RNG logic for random number generation
+    // RNG logic
     std::random_device rd;
     std::mt19937 rng(rd());
     std::uniform_int_distribution<int> uni(48,122);
