@@ -12,7 +12,7 @@ int main()
     if (!fs::exists(HOME_DIRECTORY + "/.passcurses/passrc")) create_rc(CYPHER_KEY);
     if (!fs::exists(HOME_DIRECTORY + "/.passcurses/testing.json")) create_password_file(CYPHER_KEY);
 
-    /* if (!authenticate(CYPHER_KEY)) return 0; */
+    if (!authenticate(CYPHER_KEY)) return 0;
 
     JSON j = open_password_file(CYPHER_KEY);
 
