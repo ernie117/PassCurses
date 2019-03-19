@@ -15,14 +15,9 @@
 #include "json.hpp"
 
 
-extern const std::string CURRENT_PATH;
-
-extern const int CYPHER_KEY;
 extern const int WIDTH;
 extern const int HEIGHT;
 extern const int BOX_SPACE;
-extern const int START_Y;
-extern const int START_X;
 
 extern const std::vector<std::string> HELP_STRINGS;
 

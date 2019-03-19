@@ -1,7 +1,6 @@
-// TODO Implement password deletion
 #include "includes/PassCurses.hpp"
 #include "includes/PassCurses.cpp"
-#include "includes/json.hpp"
+#include "json.hpp"
 
 
 int main()
@@ -31,14 +30,12 @@ int main()
     box(password_win, 0, 0);
     wrefresh(password_win);
 
-    int j_compare  = j.size();
+    auto j_compare = j.size();
     auto choice    = 0;  // char is too small to hold curses KEY values
-    auto highlight = 1;  // which password to highlight
     auto decrypted = false;  // tracking whether a password has been decrypted
     auto is_copied = false;  // tracking whether a password has been copied
-    auto deleted   = false;  // tracking whether a password has been deleted
     auto helped    = false;  // tracking whether help has been printed
-    auto added     = false;  // tracking whether passwords were actually added
+    auto highlight = 1;  // which password to highlight
 
     print_passwords(password_win, highlight, j, CYPHER_KEY, decrypted, is_copied);
     for (;;) {
@@ -78,13 +75,11 @@ int main()
                 break;
             // Delete a password
             case 'D':
-                deleted = delete_password_entry(j, highlight, CYPHER_KEY);
-                if (deleted) j_compare--;
+                if (delete_password_entry(j, highlight, CYPHER_KEY)) j_compare--;
                 break;
             // Decrypt/encrypt a password
             case 'd':
-                if (!decrypted) decrypted = true;
-                else decrypted = false;
+                decrypted = !decrypted;
                 break;
             // Copy a password
             case 'c':
@@ -93,13 +88,11 @@ int main()
                 break;
             // Add a password
             case 'a':
-                added = add_password(j, password_win, CYPHER_KEY);
-                if (added) j_compare++; // So scrolling knows to go all the way to the bottom of passwords
+                if (add_password(j, password_win, CYPHER_KEY)) j_compare++; // So scrolling knows to go all the way to the bottom of passwords
                 break;
             // Generate a random password
             case 'r':
-                added = new_random_password(j, password_win, CYPHER_KEY);
-                if (added) j_compare++;
+                if (new_random_password(j, password_win, CYPHER_KEY)) j_compare++;
                 write_to_file(j);
                 break;
             // Show the help lines

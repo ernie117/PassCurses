@@ -10,9 +10,7 @@ const int WIDTH     = 30;
 const int HEIGHT    = 13;
 const int BOX_SPACE = 11;
 
-const std::string CURRENT_PATH   = fs::current_path();
 const std::string HOME_DIRECTORY = get_home_directory();
-
 
 const std::vector<std::string> HELP_STRINGS {
         "'j' to scroll down",
@@ -34,7 +32,7 @@ const std::vector<std::string> HELP_STRINGS {
  */
 inline std::string
 PassCurses::encrypt(std::string message, const int &CYPHER_KEY) {
-    for (std::string::size_type i = 0; i < message.size(); i++) message[i] ^= CYPHER_KEY;
+    for (auto &ch : message ) ch ^= CYPHER_KEY;
 
     return message;
 }
@@ -81,7 +79,7 @@ PassCurses::resize_redraw() {
 
 void
 PassCurses::create_rc(const int &CYPHER_KEY) {
-    char ch;
+    int ch;
     std::cout << "passrc not present, create? [y]es/[n]o \n";
     ch = getchar();
     if (ch != 'y') std::exit(EXIT_FAILURE);
@@ -123,7 +121,7 @@ PassCurses::get_home_directory() {
 
 inline void
 PassCurses::create_data_directory(std::string home_directory) {
-    char choice;
+    int choice;
     std::cout << "Create new directory for data files? [y]es/[n]o \n";
     choice = getchar();
     std::cin.ignore();
@@ -520,7 +518,7 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
     std::ifstream instream(home_directory + "/.passcurses/testing.json");
     if (instream.fail()) {
         instream.close();
-        char ch;
+        int ch;
         std::cout << "No password JSON, create one? [y]es/[n]o \n";
         ch = getchar();
         if (ch == 'y') {
@@ -585,7 +583,7 @@ inline PassCurses::print_help_message(bool help_printed) {
 
 bool
 PassCurses::delete_password_entry(JSON &j, int highlight, const int &CYPHER_KEY) {
-    char choice;
+    int choice;
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
     const auto ROWS = (rows/2)-(HEIGHT+1);
