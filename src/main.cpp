@@ -19,7 +19,6 @@ int main()
     if ((std::string(std::getenv("USER"))) == "ernie") {
         init_color(COLOR_CYAN, 86, 143, 143); // Actually dark grey
         init_color(COLOR_WHITE, 1000, 1000, 1000); // Colour of text
-        check = true; 
     } else {
         init_color(COLOR_CYAN, 247, 247, 247);
         init_color(COLOR_WHITE, 940, 870, 686); // Colour of text
