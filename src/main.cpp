@@ -1,6 +1,6 @@
 #include "includes/PassCurses.hpp"
 #include "includes/PassCurses.cpp"
-#include "json.hpp"
+#include "includes/json.hpp"
 
 
 int main()
@@ -15,8 +15,16 @@ int main()
 
     JSON j = open_password_file(CYPHER_KEY);
 
+    bool check = false;
     initialize_ncurses();
-    init_color(COLOR_CYAN, 86, 143, 143); // Actually dark grey
+    if ((std::string(std::getenv("USER"))) == "ernie") {
+        init_color(COLOR_CYAN, 86, 143, 143); // Actually dark grey
+        init_color(COLOR_WHITE, 1000, 1000, 1000); // Colour of text
+        check = true; 
+    } else {
+        init_color(COLOR_CYAN, 247, 247, 247);
+        init_color(COLOR_WHITE, 940, 870, 686); // Colour of text
+    }
     init_pair(1, COLOR_WHITE, COLOR_CYAN);
 
     int rows, cols;
