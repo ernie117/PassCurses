@@ -23,7 +23,8 @@ const std::vector<std::string> HELP_STRINGS {
         "'gg' to jump to the top",
         "'G' to jump to the bottom",
         "'M' to jump to the middle",
-        "'D' to delete a password"
+        "'D' to delete a password",
+        "'/' to search for a key"
 };
 
 
