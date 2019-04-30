@@ -145,4 +145,10 @@ namespace PassCurses {
      */
     bool
     delete_password_entry(nlohmann::json &j, int highlight, const int &CYPHER_KEY);
+
+    /*
+     * Search for a password entry
+     */
+    int
+    search_for_password(nlohmann::json &j, int highlight, const int &CYPHER_KEY);
 }

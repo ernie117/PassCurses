@@ -101,6 +101,10 @@ int main()
                 if (new_random_password(j, password_win, CYPHER_KEY)) j_compare++;
                 write_to_file(j);
                 break;
+            // Search for a password key
+            case '/':
+                highlight = search_for_password(j, highlight, CYPHER_KEY);
+                break;
             // Show the help lines
             case 'h':
                 helped = print_help_message(helped);
