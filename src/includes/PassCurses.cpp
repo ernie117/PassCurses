@@ -632,11 +632,13 @@ PassCurses::search_for_password(JSON &j, int highlight, const int &CYPHER_KEY) {
     const auto COLS = (columns/2)-(WIDTH/2);
 
     char search_chars[30];
+    echo();
     mvprintw(ROWS, COLS, "%s", "Enter a key to search:       ");
-    move(ROWS, COLS+21);
+    move(ROWS, COLS+23);
     getstr(search_chars);
     std::string search_key(search_chars);
     mvprintw(ROWS, COLS, "%s", "                                     ");
+    noecho();
 
     bool looped = false;
     auto indx = 1;
