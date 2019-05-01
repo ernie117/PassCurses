@@ -16,7 +16,8 @@ int main()
     JSON j = open_password_file(CYPHER_KEY);
 
     initialize_ncurses();
-    if ((std::string(std::getenv("USER"))) == "ernie") {
+    if ((std::string(std::getenv("USER"))) == "ernie" ||
+         std::string(std::getenv("USER")) == "user-admin") {
         init_color(COLOR_CYAN, 86, 143, 143); // Actually dark grey
         init_color(COLOR_WHITE, 1000, 1000, 1000); // Colour of text
     } else {
