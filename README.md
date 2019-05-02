@@ -8,7 +8,9 @@ Put single-include header json.hpp from https://github.com/nlohmann/json into th
 
 ## Or with CMake:
 > __cmake .__
+
 then
+
 > __make__
 
 You can:
