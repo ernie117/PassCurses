@@ -62,13 +62,14 @@ PassCurses::initialize_ncurses() {
 
 
 /*
- * Called when window resizes, computes new dimensions
+ * Redraws window, computes new dimenions
  */
 inline std::tuple<const int, const int>
 PassCurses::resize_redraw() {
     clear();
     endwin();
     refresh();
+
     int resize_rows, resize_columns;
     getmaxyx(stdscr, resize_rows, resize_columns);
     const auto newx = (resize_columns / 2) - (WIDTH / 2);
@@ -624,28 +625,25 @@ PassCurses::delete_password_entry(JSON &j, int highlight, const int &CYPHER_KEY)
 
 int
 PassCurses::search_for_password(JSON &j, int highlight, const int &CYPHER_KEY) {
-    int tmp_highlight = highlight;
-
     int rows, columns;
     getmaxyx(stdscr, rows, columns);
     const auto ROWS = (rows/2)-(HEIGHT+1);
     const auto COLS = (columns/2)-(WIDTH/2);
 
     char search_chars[30];
-    echo();
     mvprintw(ROWS, COLS, "%s", "Enter a key to search:       ");
+    echo();
     move(ROWS, COLS+23);
     getstr(search_chars);
+    noecho();
     std::string search_key(search_chars);
     mvprintw(ROWS, COLS, "%s", "                                     ");
-    noecho();
 
-    bool looped = false;
-    auto indx = 1;
-    for (auto&[key,value] : j.items()) {
-        if (search_key.compare(decrypt(key, CYPHER_KEY)) == 0) {
-            return indx + 1;
-        } else indx++;
-    }
+    auto it = j.find(decrypt(search_key, CYPHER_KEY));
+    if (it != j.end()) {
+        highlight = std::distance(j.begin(), it) + 2;
+    } 
+
     return highlight;
+    
 }

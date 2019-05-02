@@ -1,0 +1,5 @@
+*.swp
+*.idea
+json.hpp
+cmake-build-debug
+src/cmake-build-debug
