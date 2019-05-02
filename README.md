@@ -13,7 +13,8 @@ then
 
 > __make__
 
-You can:
+
+### You can:
 * add new custom passwords
 * generate new random passwords
 * delete passwords
