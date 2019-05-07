@@ -542,25 +542,26 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
 
 
 /*
- * Everything needs to be in a loop as that's the only way to access the values
+ * Copy currently highlighted password to clipboard
  */
 void
 inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, const int &CYPHER_KEY) {
     auto indx = 0;
+    char password[20], command[100];
+    const char* first_part  = "echo -n ";
+    const char* second_part = " | xclip -selection clipboard";
+
     for (auto& [key, value] : j.items()) {
         indx++;
         if (indx+1 < highlight) continue;
-        const char* first_part  = "echo -n ";
-        const char* second_part = " | xclip -selection clipboard";
-        char password[20];
         strcpy(password, decrypt(value.get<std::string>(), CYPHER_KEY).c_str());
-        char command[100];
-        strcpy(command, first_part);
-        strcat(command, password);
-        strcat(command, second_part);
-        system(command);
         break;
     }
+
+    strcpy(command, first_part);
+    strcat(command, password);
+    strcat(command, second_part);
+    system(command);
 }
 
 
