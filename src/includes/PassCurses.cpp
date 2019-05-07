@@ -546,7 +546,7 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
  */
 void
 inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, const int &CYPHER_KEY) {
-    auto index = 0;
+    auto index = 1;
     std::string password,
                 first_part = "echo -n ",
                 second_part = " | xclip -selection clipboard";
@@ -558,7 +558,7 @@ inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, con
     }
 
     std::string command = first_part + password + second_part;
-    system(command.c_str());
+    std::system(command.c_str());
 }
 
 
