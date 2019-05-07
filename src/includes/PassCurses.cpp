@@ -546,22 +546,19 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
  */
 void
 inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, const int &CYPHER_KEY) {
-    auto indx = 0;
-    char password[20], command[100];
-    const char* first_part  = "echo -n ";
-    const char* second_part = " | xclip -selection clipboard";
+    auto index = 0;
+    std::string password,
+                first_part = "echo -n ",
+                second_part = " | xclip -selection clipboard";
 
     for (auto& [key, value] : j.items()) {
-        indx++;
-        if (indx+1 < highlight) continue;
-        strcpy(password, decrypt(value.get<std::string>(), CYPHER_KEY).c_str());
+        if ((index++)+1 < highlight) continue;
+        password = decrypt(value.get<std::string>(), CYPHER_KEY);
         break;
     }
 
-    strcpy(command, first_part);
-    strcat(command, password);
-    strcat(command, second_part);
-    system(command);
+    std::string command = first_part + password + second_part;
+    system(command.c_str());
 }
 
 
