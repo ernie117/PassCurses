@@ -51,19 +51,24 @@ namespace PassCurses {
     void
     create_rc(const int &CYPHER_KEY);
 
-    std::string
+    inline std::string
     get_home_directory();
 
 
     /*
      * Creates directory for data files
      */
-    void
-    create_data_directory(std::string home_directory);
+    inline void
+    create_data_directory(const std::string &home_directory);
 
 
-    void
+    inline void
     initialize_ncurses();
+
+
+    inline WINDOW*
+    initialize_ncurses_window();
+
 
     /*
      * Getting master password from user, comparing to file

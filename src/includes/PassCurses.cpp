@@ -43,7 +43,7 @@ PassCurses::encrypt(std::string message, const int &CYPHER_KEY) {
  * Decrypts XOR-encrypted messages
  */
 inline std::string
-PassCurses::decrypt(std::string message, const int &CYPHER_KEY) { return encrypt(message, CYPHER_KEY); }
+PassCurses::decrypt(std::string message, const int &CYPHER_KEY) { return encrypt(std::move(message), CYPHER_KEY); }
 
 
 /*
@@ -58,11 +58,41 @@ PassCurses::initialize_ncurses() {
     curs_set(0);
     keypad(stdscr, true);
     start_color();
+    // Different colour schemes for different users
+    if ((std::string(std::getenv("USER"))) == "ernie" ||
+         std::string(std::getenv("USER")) == "user-admin") {
+        init_color(COLOR_CYAN, 86, 143, 143); // Actually dark grey
+        init_color(COLOR_WHITE, 1000, 1000, 1000); // Colour of text
+    } else {
+        init_color(COLOR_CYAN, 247, 247, 247);
+        init_color(COLOR_WHITE, 940, 870, 686); // Colour of text
+    }
+    // Colour pairs for window and highlighting
+    init_pair(1, COLOR_WHITE, COLOR_CYAN);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_RED,   COLOR_BLACK);
+}
+
+
+inline WINDOW*
+PassCurses::initialize_ncurses_window() {
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+    const auto START_Y = (rows / 2) - (HEIGHT);
+    const auto START_X = (cols / 2) - (WIDTH / 2);
+    WINDOW *password_win = newwin(HEIGHT, WIDTH, START_Y, START_X);
+    wbkgd(password_win, COLOR_PAIR(1));
+    wbkgd(stdscr, COLOR_PAIR(1));
+    refresh();
+    box(password_win, 0, 0);
+    wrefresh(password_win);
+
+    return password_win;
 }
 
 
 /*
- * Redraws window, computes new dimenions
+ * Redraws window, computes new dimensions
  */
 inline std::tuple<const int, const int>
 PassCurses::resize_redraw() {
@@ -72,10 +102,10 @@ PassCurses::resize_redraw() {
 
     int resize_rows, resize_columns;
     getmaxyx(stdscr, resize_rows, resize_columns);
-    const auto newx = (resize_columns / 2) - (WIDTH / 2);
-    const auto newy = (resize_rows / 2) - (HEIGHT);
+    const auto new_X = (resize_columns / 2) - (WIDTH / 2);
+    const auto new_Y = (resize_rows / 2) - (HEIGHT);
 
-    return {newy, newx};
+    return {new_Y, new_X};
 }
 
 
@@ -122,7 +152,7 @@ PassCurses::get_home_directory() {
 
 
 inline void
-PassCurses::create_data_directory(std::string home_directory) {
+PassCurses::create_data_directory(const std::string &home_directory) {
     int choice;
     std::cout << "Create new directory for data files? [y]es/[n]o \n";
     choice = getchar();
@@ -242,10 +272,10 @@ PassCurses::print_passwords(WINDOW *password_win, int highlight, JSON &j, const 
     refresh();
     box(password_win, 0, 0);
 
-    mvprintw((rows/2)+(HEIGHT*0.05), (columns/2)-(WIDTH/2), "%s", "press 'h' to toggle help");
+    const auto print_help_line   = ((rows/2) + static_cast<int>(HEIGHT*.05));
+    const auto print_help_column = ((columns/2) - (WIDTH/2));
+    mvprintw(print_help_line, print_help_column, "%s", "press 'h' to toggle help");
     mvwprintw(password_win, 0, x, "%s", "PASSWORDS");
-    init_pair(2, COLOR_GREEN, COLOR_BLACK);
-    init_pair(3, COLOR_RED,   COLOR_BLACK);
 
     auto i = 0;
     for (auto& [key, value] : j.items()) {
@@ -505,8 +535,8 @@ PassCurses::new_random_password(JSON &j, WINDOW *password_win, const int &CYPHER
     std::string passw = generate_password(password_win);
     if (passw.empty()) return false;
 
-    std::string final_key = encrypt(std::string(key), CYPHER_KEY);
-    std::string final_passw = encrypt(std::string(passw), CYPHER_KEY);
+    std::string final_key = encrypt(key, CYPHER_KEY);
+    std::string final_passw = encrypt(passw, CYPHER_KEY);
     j[final_key] = final_passw; // setting the new/overridden value
 
     return true;
@@ -546,18 +576,18 @@ PassCurses::open_password_file(const int &CYPHER_KEY) {
  */
 void
 inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, const int &CYPHER_KEY) {
-    auto index = 1;
-    std::string password,
+    auto index = 0;
+    std::string password, command,
                 first_part = "echo -n ",
                 second_part = " | xclip -selection clipboard";
 
     for (auto& [key, value] : j.items()) {
-        if ((index++)+1 < highlight) continue;
+        if (++index != (highlight-1)) continue;
         password = decrypt(value.get<std::string>(), CYPHER_KEY);
         break;
     }
 
-    std::string command = first_part + password + second_part;
+    command = first_part + password + second_part;
     std::system(command.c_str());
 }
 
@@ -566,8 +596,8 @@ bool
 inline PassCurses::print_help_message(bool help_printed) {
     int cols, rows;
     getmaxyx(stdscr, rows, cols);
-    auto starting_row = (rows/2)+(HEIGHT*0.05);
-    auto starting_col = (cols/2)-(WIDTH/2);
+    auto starting_row = static_cast<int>(std::round(rows/2)+(HEIGHT*0.05));
+    const auto starting_col = (cols/2)-(WIDTH/2);
     if (!help_printed) {
         for (auto & str : HELP_STRINGS) {
             mvprintw(++starting_row, starting_col, "%s", str.c_str());
@@ -640,8 +670,8 @@ PassCurses::search_for_password(JSON &j, int highlight, const int &CYPHER_KEY) {
     auto it = j.find(decrypt(search_key, CYPHER_KEY));
     if (it != j.end()) {
         highlight = std::distance(j.begin(), it) + 2;
-    } 
+    }
 
     return highlight;
-    
+
 }

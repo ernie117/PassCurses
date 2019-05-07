@@ -16,33 +16,14 @@ int main()
     JSON j = open_password_file(CYPHER_KEY);
 
     initialize_ncurses();
-    if ((std::string(std::getenv("USER"))) == "ernie" ||
-         std::string(std::getenv("USER")) == "user-admin") {
-        init_color(COLOR_CYAN, 86, 143, 143); // Actually dark grey
-        init_color(COLOR_WHITE, 1000, 1000, 1000); // Colour of text
-    } else {
-        init_color(COLOR_CYAN, 247, 247, 247);
-        init_color(COLOR_WHITE, 940, 870, 686); // Colour of text
-    }
-    init_pair(1, COLOR_WHITE, COLOR_CYAN);
-
-    int rows, cols;
-    getmaxyx(stdscr, rows, cols);
-    const auto START_Y = (rows / 2) - (HEIGHT);
-    const auto START_X = (cols / 2) - (WIDTH / 2);
-    WINDOW *password_win = newwin(HEIGHT, WIDTH, START_Y, START_X);
-    wbkgd(password_win, COLOR_PAIR(1));
-    wbkgd(stdscr, COLOR_PAIR(1));
-    refresh();
-    box(password_win, 0, 0);
-    wrefresh(password_win);
+    WINDOW *password_win = initialize_ncurses_window();
 
     auto j_compare = j.size();
-    auto choice    = 0;  // char is too small to hold curses KEY values
+    auto choice    = 0;      // char is too small to hold curses KEY values
     auto decrypted = false;  // tracking whether a password has been decrypted
     auto is_copied = false;  // tracking whether a password has been copied
     auto helped    = false;  // tracking whether help has been printed
-    auto highlight = 1;  // which password to highlight
+    auto highlight = 1;      // which password to highlight
 
     print_passwords(password_win, highlight, j, CYPHER_KEY, decrypted, is_copied);
     for (;;) {
