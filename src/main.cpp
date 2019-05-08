@@ -5,7 +5,9 @@
 
 int main()
 {
-    const int CYPHER_KEY = set_key();
+    static const int CYPHER_KEY = set_key();
+
+    static const std::string HOME_DIRECTORY = get_home_directory();
 
     if (!fs::exists(HOME_DIRECTORY + "/.passcurses")) create_data_directory(HOME_DIRECTORY);
     if (!fs::exists(HOME_DIRECTORY + "/.passcurses/passrc")) create_rc(CYPHER_KEY);
@@ -76,7 +78,9 @@ int main()
                 break;
             // Add a password
             case 'a':
-                if (add_password(j, password_win, CYPHER_KEY)) j_compare++; // So scrolling knows to go all the way to the bottom of passwords
+                // Adding a password necessarily increases the number of passwords
+                // so the 'size' tracking variable needs to be incremented
+                if (add_password(j, password_win, CYPHER_KEY)) j_compare++;
                 break;
             // Generate a random password
             case 'r':

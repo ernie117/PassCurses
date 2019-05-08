@@ -10,23 +10,6 @@ const int WIDTH     = 30;
 const int HEIGHT    = 13;
 const int BOX_SPACE = 11;
 
-const std::string HOME_DIRECTORY = get_home_directory();
-
-const std::vector<std::string> HELP_STRINGS {
-        "'j' to scroll down",
-        "'k' to scroll up",
-        "'d' to decrypt password",
-        "'c' to copy password to clipboard",
-        "'a' to add new custom password",
-        "'r' to generate new password",
-        "'q' to quit",
-        "'gg' to jump to the top",
-        "'G' to jump to the bottom",
-        "'M' to jump to the middle",
-        "'D' to delete a password",
-        "'/' to search for a key"
-};
-
 
 /*
  * Encrypts messages with XOR encryption
@@ -124,9 +107,9 @@ PassCurses::create_rc(const int &CYPHER_KEY) {
         std::string password;
         std::cin.ignore();
 
-        termios old_term;
+        static struct termios old_term;
         tcgetattr(STDIN_FILENO, &old_term);
-        termios new_term = old_term;
+        struct termios new_term = old_term;
         new_term.c_lflag &= ~ECHO;
         tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
 
@@ -594,6 +577,20 @@ inline PassCurses::copy_password_to_clipboard(JSON &j, const int &highlight, con
 
 bool
 inline PassCurses::print_help_message(bool help_printed) {
+    static const std::vector<std::string> HELP_STRINGS {
+            "'j' to scroll down",
+            "'k' to scroll up",
+            "'d' to decrypt password",
+            "'c' to copy password to clipboard",
+            "'a' to add new custom password",
+            "'r' to generate new password",
+            "'q' to quit",
+            "'gg' to jump to the top",
+            "'G' to jump to the bottom",
+            "'M' to jump to the middle",
+            "'D' to delete a password",
+            "'/' to search for a key"
+    };
     int cols, rows;
     getmaxyx(stdscr, rows, cols);
     auto starting_row = static_cast<int>(std::round(rows/2)+(HEIGHT*0.05));

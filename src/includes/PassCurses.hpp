@@ -19,8 +19,6 @@ extern const int WIDTH;
 extern const int HEIGHT;
 extern const int BOX_SPACE;
 
-extern const std::vector<std::string> HELP_STRINGS;
-
 
 namespace PassCurses {
 
