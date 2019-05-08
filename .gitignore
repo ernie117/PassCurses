@@ -1,5 +1,11 @@
 *.swp
 *.idea
+*.cbp
+*.cmake
 json.hpp
 cmake-build-debug
+CMakeFiles
 src/cmake-build-debug
+CMakeCache.txt
+PassCurses
+Makefile
